@@ -1,0 +1,13 @@
+{
+  "name": "apireg",
+  "version": "1.0.0",
+  "description": "API Registration Platform",
+  "scripts": {
+    "start": "node backend/server.js",
+    "build": "cd frontend && npm install && npm run build"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+

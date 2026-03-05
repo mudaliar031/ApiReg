@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import connectDB from "./config/db.js";
 import createDefaultAdmin from "./utils/createAdmin.js";
@@ -14,6 +16,8 @@ import adminRoutes from "./routes/admin.routes.js";
 dotenv.config();
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /* -------------------- CONNECT DATABASE -------------------- */
 await connectDB();
@@ -49,8 +53,7 @@ const corsOptions = {
     const allowedOrigins = [
       "http://localhost:5173",
       "http://localhost:3000",
-      process.env.FRONTEND_URL,
-      "https://frontend-alpha-ten-56.vercel.app"
+      process.env.FRONTEND_URL
     ].filter(Boolean);
     
     if (!origin || allowedOrigins.includes(origin)) {
@@ -71,6 +74,14 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/admin", adminRoutes);
 
+// Serve frontend static files in production (for Railway)
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+// Catch-all for React router - serve index.html for any unknown route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+});
+
 app.get("/", (req, res) => {
   res.send("API Platform Backend Running");
 });
@@ -84,3 +95,4 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`🔍 Debug logging enabled - check for [SERVER] and [AUTH] logs`);
 });
+
