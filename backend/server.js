@@ -49,7 +49,8 @@ const corsOptions = {
     const allowedOrigins = [
       "http://localhost:5173",
       "http://localhost:3000",
-      process.env.FRONTEND_URL
+      process.env.FRONTEND_URL,
+      "https://frontend-alpha-ten-56.vercel.app"
     ].filter(Boolean);
     
     if (!origin || allowedOrigins.includes(origin)) {
